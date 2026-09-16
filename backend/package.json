@@ -1,0 +1,21 @@
+{
+  "name": "backend",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy --minify",
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings",
+    "postinstall": "prisma skills sync || exit 0",
+    "contract:emit": "prisma contract emit"
+  },
+  "dependencies": {
+    "@prisma/extension-accelerate": "^3.0.1",
+    "@prisma/orm-postgres": "^8.0.0-rc.8",
+    "dotenv": "^17.4.2",
+    "hono": "^4.13.7",
+    "prisma": "^8.0.0-rc.13"
+  },
+  "devDependencies": {
+    "wrangler": "^4.110.0"
+  }
+}
