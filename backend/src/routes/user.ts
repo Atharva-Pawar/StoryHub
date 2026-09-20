@@ -3,6 +3,7 @@ import postgres from "@prisma/orm-postgres/runtime";
 import type { Contract } from "../prisma/contract";
 import contractJson from "../prisma/contract.json" with { type: "json" };
 import { sign, verify, decode } from "hono/jwt";
+import common from "@atharva846/medium-common";
 
 export const userRouter = new Hono<{
   Bindings: {
@@ -18,6 +19,16 @@ userRouter.post("/signup", async (c) => {
   });
 
   const body = await c.req.json();
+  const { success } = common.signupInput.safeParse(body);
+
+  if (!success) {
+    return c.json(
+      {
+        msg: "Input is not Correct",
+      },
+      411,
+    );
+  }
 
   const user = await db.orm.public.User.create({
     email: body.email,
@@ -36,6 +47,16 @@ userRouter.post("/signin", async (c) => {
   });
 
   const body = await c.req.json();
+  const {success} = common.signinInput.safeParse(body)
+
+  if (!success) {
+    return c.json(
+      {
+        msg: "Inputs are not correct",
+      },
+      411,
+    );
+  }
 
   const user = await db.orm.public.User.where({
     email: body.email,
@@ -58,4 +79,4 @@ userRouter.post("/signin", async (c) => {
   });
 });
 
-export default userRouter
+export default userRouter;

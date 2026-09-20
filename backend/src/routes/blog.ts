@@ -3,6 +3,7 @@ import postgres from "@prisma/orm-postgres/runtime";
 import type { Contract } from "../prisma/contract";
 import contractJson from "../prisma/contract.json" with { type: "json" };
 import { sign, verify } from "hono/jwt";
+import common from "@atharva846/medium-common";
 
 export const blogRouter = new Hono<{
   Bindings: {
@@ -41,7 +42,17 @@ blogRouter.post("/", async (c) => {
   });
 
   const body = await c.req.json();
+  const {success} = common.createBlogInputs.safeParse(body)
   const authorId = c.get("userId");
+
+  if (!success) {
+    return c.json(
+      {
+        msg: "Inputs not Correct",
+      },
+      411,
+    );
+  }
 
   const blog = await db.orm.public.Post.create({
     title: body.title,
@@ -61,6 +72,16 @@ blogRouter.put("/", async (c) => {
   });
 
   const body = await c.req.json();
+  const {success} = common.updateBlogInput.safeParse(body)
+
+  if (!success) {
+    return c.json(
+      {
+        msg: "Inputs not Correct",
+      },
+      411,
+    );
+  }
 
   try {
     const blog = await db.orm.public.Post.where({
