@@ -57,3 +57,5 @@ userRouter.post("/signin", async (c) => {
     token: jwt,
   });
 });
+
+export default userRouter
