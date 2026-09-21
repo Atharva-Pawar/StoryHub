@@ -1,13 +1,30 @@
 import common, { type signupInput } from "@atharva846/medium-common";
 import { useState, type ChangeEvent } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { BACKEND_URL } from "../config";
 
 const Auth = ({ type }: { type: "signup" | "signin" }) => {
+  const navigate = useNavigate();
   const [postInputs, setPostInputs] = useState<signupInput>({
     username: "",
     email: "",
     password: "",
   });
+
+  async function sendRequest() {
+    try {
+      const response = await axios.post(
+        `${BACKEND_URL}/api/v1/user/${type === "signup" ? "signup" : "signin"}`,
+        postInputs,
+      );
+      const jwt = response.data;
+      localStorage.setItem("token", jwt);
+      navigate("/blogs");
+    } catch {
+      //alert user
+    }
+  }
 
   return (
     <>
@@ -27,16 +44,18 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
               </Link>
             </div>
             <div className="mt-6">
-              <LabelledInput
-                label="Name"
-                placeholder="Atharva Pawar"
-                onChange={(e) => {
-                  setPostInputs({
-                    ...postInputs,
-                    name: e.target.value,
-                  });
-                }}
-              />
+              {type === "signup" ? (
+                <LabelledInput
+                  label="Name"
+                  placeholder="Atharva Pawar"
+                  onChange={(e) => {
+                    setPostInputs({
+                      ...postInputs,
+                      name: e.target.value,
+                    });
+                  }}
+                />
+              ) : null}
               <LabelledInput
                 label="Email"
                 placeholder="atharvapawar@gmail.com"
@@ -61,6 +80,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
             </div>
             <div className="pt-6">
               <button
+                onClick={sendRequest}
                 type="button"
                 className="pointer w-full text-body bg-neutral-primary border border-default hover:bg-neutral-secondary-soft hover:text-semibold focus:ring-4 focus:ring-neutral-tertiary font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
               >
