@@ -18,11 +18,11 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
         `${BACKEND_URL}/api/v1/user/${type === "signup" ? "signup" : "signin"}`,
         postInputs,
       );
-      const jwt = response.data;
+      const jwt = response.data.token;
       localStorage.setItem("token", jwt);
       navigate("/blogs");
     } catch {
-      //alert user
+      alert("Error while signup/signin")
     }
   }
 
@@ -51,7 +51,7 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
                   onChange={(e) => {
                     setPostInputs({
                       ...postInputs,
-                      name: e.target.value,
+                      username: e.target.value,
                     });
                   }}
                 />
