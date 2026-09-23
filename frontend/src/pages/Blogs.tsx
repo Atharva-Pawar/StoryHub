@@ -1,36 +1,28 @@
 import Appbar from "../components/Appbar";
 import BlogCard from "../components/BlogCard";
+import { useBlogs } from "../hooks";
 
 const Blogs = () => {
+  const { blogs, loading } = useBlogs();
+
+  if (loading) {
+    return <div>loading...</div>;
+  }
+
   return (
     <>
       <Appbar />
       <div className="flex justify-center">
         <div className="max-w-xl">
-          <BlogCard
-            authorName="Atharva Pawar"
-            title="Titel of the book this is the big title for the book and change it"
-            content="content of the book Titel of the book this is the big title for the book and change it Titel of the book this is the big title for the book and change it"
-            publishedDate="2nd feb 2026"
-          />
-          <BlogCard
-            authorName="Atharva Pawar"
-            title="Titel of the book this is the big title for the book and change it"
-            content="content of the book Titel of the book this is the big title for the book and change it Titel of the book this is the big title for the book and change it"
-            publishedDate="2nd feb 2026"
-          />
-          <BlogCard
-            authorName="Atharva Pawar"
-            title="Titel of the book this is the big title for the book and change it"
-            content="content of the book Titel of the book this is the big title for the book and change it Titel of the book this is the big title for the book and change it"
-            publishedDate="2nd feb 2026"
-          />
-          <BlogCard
-            authorName="Atharva Pawar"
-            title="Titel of the book this is the big title for the book and change it"
-            content="content of the book Titel of the book this is the big title for the book and change it Titel of the book this is the big title for the book and change it"
-            publishedDate="2nd feb 2026"
-          />
+          {blogs.map((blog) => (
+            <BlogCard
+              id={blog.id}
+              authorName={blog.author.name || "Anonymous"}
+              title={blog.title}
+              content={blog.content}
+              publishedDate="2nd feb 2026"
+            />
+          ))}
         </div>
       </div>
     </>

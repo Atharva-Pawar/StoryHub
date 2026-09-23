@@ -1,10 +1,14 @@
+import { Link } from "react-router-dom";
+
 interface BlogCaedProps {
   authorName: string;
   title: string;
   content: string;
   publishedDate: string;
+  id: string
 }
 const BlogCard = ({
+  id,
   authorName,
   title,
   content,
@@ -12,7 +16,8 @@ const BlogCard = ({
 }: BlogCaedProps) => {
   return (
     <>
-      <div className="border-b border-slate-300 pb-3.5 p-4">
+    <Link to={`/blog/${id}`}>
+      <div className="border-b border-slate-300 pb-3.5 p-4 w-screen max-w-screen cursor-pointer">
         <div className="flex">
           <div className="flex justify-center flex-col">
             <Avatar name={authorName} />
@@ -28,6 +33,7 @@ const BlogCard = ({
         <div className="text-md font-thin">{content.slice(0, 100) + "..."}</div>
         <div className="text-sm font-thin text-slate-400">{`${Math.ceil(content.length / 100)} minutes`}</div>
       </div>
+      </Link>
     </>
   );
 };
