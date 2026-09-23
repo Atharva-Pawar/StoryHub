@@ -32,7 +32,7 @@ const BlogCard = ({
   );
 };
 
-function Avatar({ name }: { name: string }) {
+export function Avatar({ name }: { name: string }) {
   return (
     <>
       <div className="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-400 rounded-full">
