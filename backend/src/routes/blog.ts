@@ -42,7 +42,7 @@ blogRouter.post("/", async (c) => {
   });
 
   const body = await c.req.json();
-  const {success} = common.createBlogInputs.safeParse(body)
+  const { success } = common.createBlogInputs.safeParse(body);
   const authorId = c.get("userId");
 
   if (!success) {
@@ -72,7 +72,7 @@ blogRouter.put("/", async (c) => {
   });
 
   const body = await c.req.json();
-  const {success} = common.updateBlogInput.safeParse(body)
+  const { success } = common.updateBlogInput.safeParse(body);
 
   if (!success) {
     return c.json(
@@ -111,7 +111,10 @@ blogRouter.get("/bulk", async (c) => {
   });
 
   console.log(c.env.DATABASE_URL);
-  const blogs = await db.orm.public.Post.all();
+
+  const blogs = await db.orm.public.Post.select("content", "title", "id")
+    .include("author", (author) => author.select("name"))
+    .all();
 
   return c.json({
     blogs,
@@ -128,7 +131,10 @@ blogRouter.get("/:id", async (c) => {
   try {
     const blog = await db.orm.public.Post.where({
       id: id,
-    }).first();
+    })
+      .select("title", "content", "id")
+      .include("author", (author) => author.select("name"))
+      .first();
 
     if (!blog) {
       return c.json(
