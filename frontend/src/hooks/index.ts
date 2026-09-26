@@ -6,12 +6,13 @@ export interface Blog {
   content: string;
   title: string;
   id: string;
+  publishedDate?: string;
   author: {
     name: string;
   };
 }
 
-export const useBlog = ({id}: {id: string}) => {
+export const useBlog = ({ id }: { id: string }) => {
   const [loading, setLoading] = useState(true);
   const [blog, setBlog] = useState<Blog>();
 
@@ -26,7 +27,7 @@ export const useBlog = ({id}: {id: string}) => {
         setBlog(response.data.blog);
         setLoading(false);
       });
-  }, []);
+  }, [id]);
 
   return {
     loading,

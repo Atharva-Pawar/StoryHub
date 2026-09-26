@@ -1,8 +1,9 @@
-import common, { type signupInput } from "@atharva846/medium-common";
+import { type signupInput } from "@atharva846/medium-common";
 import { useState, type ChangeEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BACKEND_URL } from "../config";
+import { Button, Input } from "./ui";
 
 const Auth = ({ type }: { type: "signup" | "signin" }) => {
   const navigate = useNavigate();
@@ -11,117 +12,115 @@ const Auth = ({ type }: { type: "signup" | "signin" }) => {
     email: "",
     password: "",
   });
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   async function sendRequest() {
+    setError("");
+    setIsLoading(true);
     try {
       const response = await axios.post(
         `${BACKEND_URL}/api/v1/user/${type === "signup" ? "signup" : "signin"}`,
-        postInputs,
+        postInputs
       );
       const jwt = response.data.token;
       localStorage.setItem("token", jwt);
       navigate("/blogs");
-    } catch {
-      alert("Error while signup/signin")
+    } catch (err: unknown) {
+      const axiosError = err as { response?: { data?: { message?: string } } };
+      setError(axiosError.response?.data?.message || "Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   }
 
+  const handleChange = (field: keyof signupInput) => (e: ChangeEvent<HTMLInputElement>) => {
+    setPostInputs({ ...postInputs, [field]: e.target.value });
+    if (error) setError("");
+  };
+
   return (
-    <>
-      <div className="h-screen flex justify-center flex-col">
-        <div className="flex justify-center">
-          <div>
-            <div className="text-3xl font-extrabold">Create an account</div>
-            <div>
-              {type === "signin"
-                ? "Don't have an account?"
-                : "Already have an account?"}
-              <Link
-                className="pl-2 underline"
-                to={type === "signin" ? "/signup" : "/signin"}
-              >
-                {type === "signin" ? "Sign up" : "Sign in"}
-              </Link>
+    <div className="min-h-screen flex items-center justify-center px-4 py-12">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-10">
+          <Link to="/blogs" className="inline-flex items-center gap-2 font-semibold text-2xl text-[var(--color-text-primary)] mb-8">
+            <svg
+              className="h-8 w-8 text-[var(--color-accent-primary)]"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
+            </svg>
+            <span>Medium</span>
+          </Link>
+          <h1 className="text-3xl font-bold text-[var(--color-text-primary)]">
+            {type === "signup" ? "Create your account" : "Welcome back"}
+          </h1>
+          <p className="mt-2 text-[var(--color-text-secondary)]">
+            {type === "signup"
+              ? "Start writing and sharing your stories"
+              : "Sign in to continue reading and writing"}
+          </p>
+        </div>
+
+        <div className="bg-[var(--color-bg-card)] border border-[var(--color-border-primary)] rounded-xl p-8">
+          {error && (
+            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm" role="alert">
+              {error}
             </div>
-            <div className="mt-6">
-              {type === "signup" ? (
-                <LabelledInput
-                  label="Name"
-                  placeholder="Atharva Pawar"
-                  onChange={(e) => {
-                    setPostInputs({
-                      ...postInputs,
-                      username: e.target.value,
-                    });
-                  }}
-                />
-              ) : null}
-              <LabelledInput
-                label="Email"
-                placeholder="atharvapawar@gmail.com"
-                onChange={(e) => {
-                  setPostInputs({
-                    ...postInputs,
-                    email: e.target.value,
-                  });
-                }}
+          )}
+
+          <form onSubmit={(e) => { e.preventDefault(); sendRequest(); }} className="space-y-5">
+            {type === "signup" && (
+              <Input
+                label="Name"
+                placeholder="John Doe"
+                value={postInputs.username}
+                onChange={handleChange("username")}
+                required
+                autoComplete="name"
               />
-              <LabelledInput
-                label="Password"
-                placeholder="abc@123"
-                type="password"
-                onChange={(e) => {
-                  setPostInputs({
-                    ...postInputs,
-                    password: e.target.value,
-                  });
-                }}
-              />
-            </div>
-            <div className="pt-6">
-              <button
-                onClick={sendRequest}
-                type="button"
-                className="pointer w-full text-body bg-neutral-primary border border-default hover:bg-neutral-secondary-soft hover:text-semibold focus:ring-4 focus:ring-neutral-tertiary font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
-              >
-                {type === "signup" ? "Sign up" : "Sign in"}
-              </button>
-            </div>
-          </div>
+            )}
+
+            <Input
+              label="Email"
+              placeholder="john@example.com"
+              type="email"
+              value={postInputs.email}
+              onChange={handleChange("email")}
+              required
+              autoComplete="email"
+            />
+
+            <Input
+              label="Password"
+              placeholder="••••••••"
+              type="password"
+              value={postInputs.password}
+              onChange={handleChange("password")}
+              required
+              autoComplete={type === "signup" ? "new-password" : "current-password"}
+            />
+
+            <Button type="submit" className="w-full mt-2" isLoading={isLoading}>
+              {type === "signup" ? "Create account" : "Sign in"}
+            </Button>
+          </form>
+
+          <p className="mt-6 text-center text-sm text-[var(--color-text-secondary)]">
+            {type === "signup" ? "Already have an account?" : "Don't have an account?"}{" "}
+            <Link
+              to={type === "signup" ? "/signin" : "/signup"}
+              className="font-medium text-[var(--color-accent-primary)] hover:text-[var(--color-accent-hover)] transition-colors"
+            >
+              {type === "signup" ? "Sign in" : "Sign up"}
+            </Link>
+          </p>
         </div>
       </div>
-    </>
+    </div>
   );
 };
-
-interface LabelledInputType {
-  label: string;
-  placeholder: string;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  type?: string;
-}
-
-function LabelledInput({
-  label,
-  placeholder,
-  onChange,
-  type,
-}: LabelledInputType) {
-  return (
-    <>
-      <label className="block mb-2.5 pt-3 text-sm font-semibold text-heading">
-        {label}
-      </label>
-      <input
-        onChange={onChange}
-        type={type || "text"}
-        id="first_name"
-        className="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
-        placeholder={placeholder}
-        required
-      />
-    </>
-  );
-}
 
 export default Auth;

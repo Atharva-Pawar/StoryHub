@@ -1,49 +1,56 @@
-const BlogPageSkeleton = () => {
+export function BlogPageSkeleton() {
   return (
-    <div className="animate-pulse">
-      
-      {/* Appbar space */}
-      <div className="h-16 border-b border-slate-200" />
+    <div className="min-h-screen pt-16 pb-16 px-4 sm:px-6 lg:px-8 animate-pulse">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12">
+          {/* Main Article */}
+          <article className="lg:col-span-8">
+            <header className="mb-8">
+              <div className="h-12 w-3/4 bg-[var(--color-bg-tertiary)] rounded mb-4" />
+              <div className="h-8 w-1/2 bg-[var(--color-bg-tertiary)] rounded mb-2" />
+              <div className="flex flex-wrap items-center gap-4">
+                <div className="w-8 h-8 rounded-full bg-[var(--color-bg-tertiary)]" />
+                <div className="h-4 w-24 bg-[var(--color-bg-tertiary)] rounded" />
+                <div className="h-4 w-4 bg-[var(--color-bg-tertiary)] rounded" />
+                <div className="h-4 w-20 bg-[var(--color-bg-tertiary)] rounded" />
+                <div className="h-4 w-4 bg-[var(--color-bg-tertiary)] rounded" />
+                <div className="h-4 w-16 bg-[var(--color-bg-tertiary)] rounded" />
+              </div>
+            </header>
 
-      <div className="flex justify-center">
-        <div className="grid grid-cols-12 px-10 w-full pt-12 max-w-screen-2xl">
-          
-          {/* Blog content */}
-          <div className="col-span-8 pr-16">
-            
-            {/* Title */}
-            <div className="h-12 w-4/5 bg-slate-200 rounded mb-5" />
+            <div className="space-y-4">
+              <div className="h-6 w-full bg-[var(--color-bg-tertiary)] rounded" />
+              <div className="h-6 w-full bg-[var(--color-bg-tertiary)] rounded" />
+              <div className="h-6 w-5/6 bg-[var(--color-bg-tertiary)] rounded" />
+              <div className="h-32 w-full bg-[var(--color-bg-tertiary)] rounded-lg" />
+              <div className="h-6 w-full bg-[var(--color-bg-tertiary)] rounded" />
+              <div className="h-6 w-full bg-[var(--color-bg-tertiary)] rounded" />
+              <div className="h-6 w-4/5 bg-[var(--color-bg-tertiary)] rounded" />
+              <div className="h-32 w-full bg-[var(--color-bg-tertiary)] rounded-lg" />
+              <div className="h-6 w-full bg-[var(--color-bg-tertiary)] rounded" />
+              <div className="h-6 w-3/4 bg-[var(--color-bg-tertiary)] rounded" />
+            </div>
+          </article>
 
-            {/* Date */}
-            <div className="h-4 w-40 bg-slate-200 rounded mb-10" />
-
-            {/* Content */}
-            <div className="h-5 w-full bg-slate-200 rounded mb-4" />
-            <div className="h-5 w-full bg-slate-200 rounded mb-4" />
-            <div className="h-5 w-11/12 bg-slate-200 rounded mb-4" />
-            <div className="h-5 w-4/5 bg-slate-200 rounded mb-4" />
-            <div className="h-5 w-full bg-slate-200 rounded mb-4" />
-            <div className="h-5 w-3/4 bg-slate-200 rounded" />
-          </div>
-
-          {/* Author */}
-          <div className="col-span-4 pl-10">
-            <div className="h-6 w-24 bg-slate-200 rounded mb-6" />
-
-            <div className="flex items-center">
-              <div className="w-10 h-10 rounded-full bg-slate-200" />
-
-              <div className="ml-4">
-                <div className="h-5 w-28 bg-slate-200 rounded mb-3" />
-                <div className="h-4 w-52 bg-slate-200 rounded" />
+          {/* Author Sidebar */}
+          <aside className="lg:col-span-4">
+            <div className="sticky top-24">
+              <div className="bg-[var(--color-bg-card)] border border-[var(--color-border-primary)] rounded-xl p-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-16 h-16 rounded-full bg-[var(--color-bg-tertiary)]" />
+                  <div className="flex-1">
+                    <div className="h-5 w-24 bg-[var(--color-bg-tertiary)] rounded mb-2" />
+                    <div className="h-4 w-full bg-[var(--color-bg-tertiary)] rounded mb-2" />
+                    <div className="h-4 w-3/4 bg-[var(--color-bg-tertiary)] rounded" />
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-
+          </aside>
         </div>
       </div>
     </div>
   );
-};
+}
 
 export default BlogPageSkeleton;

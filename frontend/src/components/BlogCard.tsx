@@ -1,50 +1,74 @@
 import { Link } from "react-router-dom";
+import { Avatar } from "./ui";
 
-interface BlogCaedProps {
+interface BlogCardProps {
+  id: string;
   authorName: string;
   title: string;
   content: string;
   publishedDate: string;
-  id: string
+  readingTime?: number;
 }
-const BlogCard = ({
+
+function formatDate(dateStr: string): string {
+  try {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  } catch {
+    return dateStr;
+  }
+}
+
+function calculateReadingTime(content: string): number {
+  const wordsPerMinute = 200;
+  const words = content.trim().split(/\s+/).length;
+  return Math.max(1, Math.ceil(words / wordsPerMinute));
+}
+
+export function BlogCard({
   id,
   authorName,
   title,
   content,
   publishedDate,
-}: BlogCaedProps) => {
+  readingTime,
+}: BlogCardProps) {
+  const readTime = readingTime || calculateReadingTime(content);
+  const excerpt = content.slice(0, 180).trimEnd() + (content.length > 180 ? "…" : "");
+  const formattedDate = formatDate(publishedDate);
+
   return (
-    <>
-    <Link to={`/blog/${id}`}>
-      <div className="border-b border-slate-300 pb-3.5 p-4 w-screen max-w-screen cursor-pointer">
-        <div className="flex">
-          <div className="flex justify-center flex-col">
-            <Avatar name={authorName} />
-          </div>
-          <div className="font-extralight pl-2 flex justify-center flex-col">
-            {authorName}
-          </div>
-          <div className="pl-2 font-thin text-slate-500 flex justify-center flex-col">
-            {publishedDate}
+    <article className="group">
+      <Link
+        to={`/blog/${id}`}
+        className="block p-6 bg-[var(--color-bg-card)] border border-[var(--color-border-primary)] rounded-xl hover:bg-[var(--color-bg-card-hover)] hover:border-[var(--color-border-secondary)] transition-all duration-200 ease-in-out"
+      >
+        <div className="flex items-start gap-4">
+          <Avatar name={authorName} size="md" className="flex-shrink-0" />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-3 text-sm text-[var(--color-text-muted)] mb-3">
+              <span className="font-medium text-[var(--color-text-secondary)]">{authorName}</span>
+              <span aria-hidden="true">·</span>
+              <time dateTime={publishedDate}>{formattedDate}</time>
+              <span aria-hidden="true">·</span>
+              <span>{readTime} min read</span>
+            </div>
+
+            <h2 className="text-xl font-semibold text-[var(--color-text-primary)] leading-snug mb-2 group-hover:text-[var(--color-accent-primary)] transition-colors duration-200 line-clamp-2">
+              {title}
+            </h2>
+
+            <p className="text-[var(--color-text-secondary)] leading-relaxed line-clamp-3">
+              {excerpt}
+            </p>
           </div>
         </div>
-        <div className="text-xl font-semibold">{title}</div>
-        <div className="text-md font-thin">{content.slice(0, 100) + "..."}</div>
-        <div className="text-sm font-thin text-slate-400">{`${Math.ceil(content.length / 100)} minutes`}</div>
-      </div>
       </Link>
-    </>
-  );
-};
-
-export function Avatar({ name }: { name: string }) {
-  return (
-    <>
-      <div className="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-400 rounded-full">
-        <span className="font-medium text-body">{name[0]}</span>
-      </div>
-    </>
+    </article>
   );
 }
 
