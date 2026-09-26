@@ -1,6 +1,6 @@
 import Appbar from "../components/Appbar";
 import BlogCard from "../components/BlogCard";
-import Loading from "../components/Loading";
+import BlogCardSkeleton from "../components/BlogCard.Skeleton";
 import { useBlogs } from "../hooks";
 
 const Blogs = () => {
@@ -8,7 +8,7 @@ const Blogs = () => {
 
   if (loading) {
     return <div>
-      <Loading />
+      <BlogCardSkeleton />
     </div>;
   }
 
