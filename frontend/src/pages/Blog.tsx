@@ -1,25 +1,25 @@
-import { useParams } from "react-router-dom"
-import { useBlog } from "../hooks"
-import BlogPage from "../components/BlogPage"
+import { useParams } from "react-router-dom";
+import { useBlog } from "../hooks";
+import BlogPage from "../components/BlogPage";
+import Loading from "../components/Loading";
 
 const Blog = () => {
+  const { id } = useParams();
+  const { loading, blog } = useBlog({
+    id: id || "",
+  });
 
-  const {id} = useParams()
-  const {loading, blog} = useBlog({
-    id: id || ""
-  })
-
-  if(loading){
+  if (loading) {
     return <div>
-      loading...
-    </div>
+      <Loading />
+    </div>;
   }
 
   return (
     <>
-      <BlogPage blog={blog} />
+      <BlogPage blog={blog!} />
     </>
-  )
-}
+  );
+};
 
-export default Blog
+export default Blog;
