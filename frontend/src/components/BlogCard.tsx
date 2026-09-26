@@ -6,11 +6,12 @@ interface BlogCardProps {
   authorName: string;
   title: string;
   content: string;
-  publishedDate: string;
+  publishedDate?: string;
   readingTime?: number;
 }
 
-function formatDate(dateStr: string): string {
+function formatDate(dateStr?: string): string {
+  if (!dateStr) return "Unknown date";
   try {
     const date = new Date(dateStr);
     return date.toLocaleDateString("en-US", {
@@ -53,7 +54,7 @@ export function BlogCard({
             <div className="flex items-center gap-3 text-sm text-[var(--color-text-muted)] mb-3">
               <span className="font-medium text-[var(--color-text-secondary)]">{authorName}</span>
               <span aria-hidden="true">·</span>
-              <time dateTime={publishedDate}>{formattedDate}</time>
+              <time dateTime={publishedDate || ""}>{formattedDate}</time>
               <span aria-hidden="true">·</span>
               <span>{readTime} min read</span>
             </div>

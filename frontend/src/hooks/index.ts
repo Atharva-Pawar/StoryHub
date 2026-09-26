@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { BACKEND_URL } from "../config";
@@ -15,8 +16,13 @@ export interface Blog {
 export const useBlog = ({ id }: { id: string }) => {
   const [loading, setLoading] = useState(true);
   const [blog, setBlog] = useState<Blog>();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+
     axios
       .get(`${BACKEND_URL}/api/v1/blog/${id}`, {
         headers: {
@@ -24,22 +30,40 @@ export const useBlog = ({ id }: { id: string }) => {
         },
       })
       .then((response) => {
-        setBlog(response.data.blog);
-        setLoading(false);
+        if (!cancelled) {
+          setBlog(response.data.blog);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setError(err.response?.data?.msg || "Failed to load blog");
+          setLoading(false);
+        }
       });
+
+    return () => {
+      cancelled = true;
+    };
   }, [id]);
 
   return {
     loading,
     blog,
+    error,
   };
 };
 
 export const useBlogs = () => {
   const [loading, setLoading] = useState(true);
   const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+
     axios
       .get(`${BACKEND_URL}/api/v1/blog/bulk`, {
         headers: {
@@ -47,13 +71,26 @@ export const useBlogs = () => {
         },
       })
       .then((response) => {
-        setBlogs(response.data.blogs);
-        setLoading(false);
+        if (!cancelled) {
+          setBlogs(response.data.blogs);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setError(err.response?.data?.msg || "Failed to load blogs");
+          setLoading(false);
+        }
       });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return {
     loading,
     blogs,
+    error,
   };
 };
